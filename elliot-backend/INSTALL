@@ -1,0 +1,106 @@
+
+Intalling JASmine-Backend
+
+This is the installation procedure for JASmine-Backend. More
+information and (Maybe ;-)) user feedback can be found at
+  http://jasmine.berlios.de/
+English documentation is there too.
+
+
+Ok, go on:
+
+* Pkpgcounter installation
+
+  The files are located in the 'pkpgcounter-VERSION' tarball.
+  Pkpgcounter is part of the 'PyKota' print accounting project,
+  much more advanced than mine, and is developped by Jerome
+  Alet.
+  Warning : Python and Perl are needed !
+
+  1- Install Python and the Python Imaging Library (PIL).
+     For example, with Mandriva :
+     # urpmi python python-imaging
+
+  2- Pkpgcounter installation
+    You can use pkpgcounter's installer (Recommended, but you will
+    need python-devel with some distros - Mandriva, for example),
+    or do it manually :
+
+    * Manual installation : All you need it to copy pkpgcounter and its
+      libraries to the right place; X.X is your Python version (Python2.4 on
+      Mandriva 2006.0)
+      # tar xfzv pkpgcounter-VERSION.tar.gz
+      # cd pkpgcounter-VERSION
+      # cp -r pkpgpdls /usr/lib/pythonX.X/site-packages/
+      # cp bin/pkpgcounter /usr/bin
+
+      Take care of the owner and permissions !!!
+
+    * Using the installer :
+      # tar xfzv pkpgcounter-VERSION.tar.gz
+      # cd pkpgcounter-VERSION
+      # urpmi python-devel (or apt-get... Do this only if "python setup..." fails)
+      # python setup.py install
+
+* Backend installation
+
+  1-  Copy the perl script 'jasmine' into Cups's backend directory
+     (Usually '/usr/lib/cups/backend', like in Mandriva and Ubuntu),
+     and chown it '755' to 'root'.
+
+  2-  You can too copy the 'dummy' shell script there, setting the
+     same permissions; it will appear in Cups' dropdown list when
+     setting up a new printer as "Really virtual printer for testing
+     Cups". It prints nothing, but can be used to try/debug JASmine
+     without consuming paper, and it logs useful informations to syslog.
+     Do not forget to chown it '755' to 'root'.
+
+  2-  Check that you have Perl installed (by default in Mandriva
+     and Ubuntu), and that the perl executable is located at
+     '/usr/bin/perl'.
+
+  4-  You'll need the DBI and MySQL perl modules installed (
+     'urpmi perl-DBI perl-DBD-mysql' with Mandriva 2006.0, and 'sudo
+     apt-get install libdbd-mysql-perl' with Ubuntu 5.04)
+
+  5-  Do not forget to run the sql script into your MySQL server ! See
+     the INSTALL file in the 'JASmine-MySQL' archive.
+
+  6-  Modify the JASmine backend by editing the variables at the
+     beginning of the file: Make the variables point to the right paths,
+     specify the MySQL password, login, host and database, and weather
+     or not you want syslog and debug messages.
+     --
+     my $DBhost="mysql.here.com";
+     my $DBlogin="jasmine";
+     my $DBpassword="sql_passowrd";
+     my $DBdatabase="print";
+
+     my $Want_Sys_Syslog=1;
+     my $Debug_Mode=1;
+
+     my $path_to_pkpgcounter="/usr/bin/pkpgcounter";
+     my $path_to_python="/usr/bin/python";
+     --
+
+     You should leave $Debug_Mode to 1 and tail -f your /var/log/syslog
+     file(s) while in installation/setup phase. when sure your jobs
+     get accounted for, set $Debug_Mode to 0 !
+
+  7-  Reload Cups, connect to 'http://cups_server:631', use this inteface
+     to setup a new printer. Be sure to choose '....(Quota managed)' for
+     the driver (URI beginning with 'jasmine:') !
+
+     Final URIs should look like "jasmine:socket://printer_adress:9100"
+     (For an HP DirectJet network printer), "jasmine:usb:/dev/usb/lp0"
+     (for an USB printer... In fact, add 'jasmine:' at the beginning
+     of any printer URI to make its jobs accounted.
+
+     Then print something on this printer and look at the 'jobs_log'
+     table in the database to see if the number of pages is logged...
+     Do not forget to check Cups's logs and your syslog to find about
+     errors.
+
+  8-  Install 'JASmine-Web', and play with it ;-).
+
+That's all !

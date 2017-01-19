@@ -1,0 +1,517 @@
+#!/usr/bin/perl -w
+
+# JASmine, print accounting system for Cups.
+# Copyright (C) Nayco.
+#
+# (Please read the COPYING file)
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+
+# Variables
+# => Edit the following to suit your needs:
+
+# MySQL server related stuff: You have to create the corresponding
+# account, database and table on your MySQL server
+my $DBhost="MYSQL_HOST";
+my $DBlogin="MYSQL_LOGIN";
+my $DBpassword="MYSQL_PASS";
+my $DBdatabase="MYSQL_DB";
+
+# If you want to use Syslog, set this to 1. To disable, set to 0.
+my $Want_Sys_Syslog=1;
+
+# Debug mode : Should be used only for debugging or setup phase,
+# and not in production... Set to 0 when everything works fine.
+#   0 : Use this in production, debug disabled
+#   1 : Installation/configuration phase.
+#   2 : For developers only, will fill your harddrive with tempfiles !
+my $Debug_Mode=1;
+
+# Location of the python and pkpgcounter binaries
+my $path_to_pkpgcounter="/usr/bin/pkpgcounter";
+my $path_to_python="/usr/bin/python";
+
+
+##
+## /!\ NOTHING TO EDIT UNDER THIS LINE !!! /!\
+##
+
+use strict;
+#use Data::Dumper;
+use POSIX qw(strftime);
+use File::Basename;
+use File::Copy;
+use Sys::Hostname;
+#use DBI;
+use DBD::mysql; #<= WORK ON THISSSSSSSss !!!!!
+
+# Backend-related variables: Should not be changed if working !
+my $backends_dir = dirname($0);
+my $me = basename($0);
+
+# Lockfile: Critical to prevent this script to bring down the server !
+## TODO: Look for a better place to create this lockfile, maybe /var/... ?
+my $lockfile = $backends_dir."/".$me.".lock";
+
+# Create a flag to store success or failure of the accounting, in order to prevent
+# deletion of the temp file : We will keep it for further investigation. A job
+# is considered as failure if pkpgcounter returned "0 page" OR was unable to
+# count anything OR the database insertion failed.
+my $count_failure = 0;
+
+# Functions
+
+# The three next functions are used to log debug messages, errors or successes
+# via STDERR (Then used by cups) and Syslog if you need. We must NOT use
+# STDOUT... Cups needs keywords like "INFO: ", "ERROR: ", "DEBUG: ", etc,
+# to display our messages within its interface (In the "manage printers"
+# section).
+# Note the conditionnal definition of these functions, as well as the
+# conditionnal 'use' statement, based on the '$Want_Sys_Syslog' and/or
+# $debug_mode variables set at the top of this file.
+my $log_success;
+my $log_failure;
+my $log_debug;
+
+if ($Want_Sys_Syslog){
+  my $Sys_Syslog_Installed = do {
+    eval {
+    require Sys::Syslog;
+    import Sys::Syslog qw(syslog openlog closelog);
+    };
+    $@ ? 0 : 1;
+  };
+  if ($Sys_Syslog_Installed){
+    # Init the logging system: The backend's name and its PID
+    # will be added in each line logged.
+    openlog ($me, 'pid');
+    # Define the logging functions
+    *log_success = sub {
+      syslog( 'info', $_ ) for @_;
+      print STDERR "INFO: $me: ".join( "\n" => @_ ), "\n";
+    };
+    *log_failure = sub {
+      syslog( 'warning', $_ ) for @_;
+      print STDERR "ERROR: $me: ".join( "\n" => @_ ), "\n";
+    };
+    # If debug mode is activated
+    if ($Debug_Mode){
+      *log_debug = sub {
+        syslog( 'debug', $_ ) for @_;
+        # use STDERR in order not to pollute
+        # the backend's output.
+        print STDERR "DEBUG: $me: ".join( "\n" => @_ ), "\n";
+      }
+    }
+    # If no debug is asked for, do nothing
+    else {
+      *log_debug = sub {};
+    }
+  }
+  else {
+    # Sys::Syslog is needed but not present: Tell the
+    # admin and exit !
+    die ("ERROR: $me: FATAL: The 'Sys::Syslog' perl module is not installed !\n Please install it or set \$Want_Sys_Syslog to 0 in the $backends_dir/$me perl script.")
+  }
+}
+else{
+  # So we decided not to use Syslog support ? Ok, fall back to
+  # STDERR only, and create a fake closelog() function to avoid
+  # errors.
+  my $closelog;
+  *closelog = sub{};
+  *log_success = sub { print STDERR "INFO: $me: ".join( "\n" => @_ ), "\n" };
+  *log_failure = sub { print STDERR "ERROR: $me: ".join( "\n" => @_ ), "\n" };
+  # If debug mode is activated
+  if ($Debug_Mode){
+    *log_debug = sub {
+      # use STDERR in order not to pollute
+      # the backend's output.
+      print STDERR "DEBUG: $me: ".join( "\n" => @_ ), "\n";
+    }
+  }
+  # If no debug is asked for, do nothing
+  else {
+    *log_debug = sub {};
+  }
+}
+# Finally, if debug is on, inform the sysadmin that it should
+# be turned off when going to production. We use log_failure()
+# here to be sure the admin gets the message, as DEBUG priority
+# is often filtered by the logging system.
+log_failure ("Warning: Debug mode is activated, you should turn it off
+when going to production ! To do so, set \$Debug_Mode to 0
+in the $backends_dir/$me perl script.") if ($Debug_Mode);
+
+log_failure ("Warning: Debug mode is set to 2, your '/var' partition may
+be full in a near future...") if ($Debug_Mode == 2);
+
+sub count_pages {
+  # This function returns an estimation of the number of pages
+  # that the job will print. It may not be accurate...
+  # Starting with JASmine 0.0.2, we use "pkpgcounter". Pkpgcounter
+  # (http://www.librelogiciel.com/software/pkpgcounter/action_Presentation)
+  # is a page counter program written by J�ome Alet. Pkpgcounter is
+  # far more accurate and advanced than anything I could write by myself, so
+  # I find better to use it than to reinvent the wheel ;)
+
+  # Get the name of the file to analyse
+  my $doc=shift;
+
+  # If pdl_analyser.py isn't installed, or the path incorrect,
+  # or not executable, warn the admin !
+  if ( ! -e $path_to_pkpgcounter){
+    log_failure ("  Analyzer not found: Check that you installed $path_to_pkpgcounter");
+    $count_failure = 1;
+  }
+
+  ## Was this really useful ?
+  #if ( ! -x $path_to_pkpgcounter){
+  #  log_failure ("  Analyzer is not executable: Check that you've chmod'ed +x $path_to_pkpgcounter");
+  #  $count_failure = 1;
+  #}
+
+  # Same thing for the Python executable...
+  if ( ! -e $path_to_python){
+    log_failure ("  Python not found: Check that you installed $path_to_python");
+    $count_failure = 1;
+  }
+
+  if ( ! -x $path_to_python){
+    log_failure ("  Python is not executable: Check that you've chmod'ed +x $path_to_python");
+    $count_failure = 1;
+  }
+
+  # This command will analyze our print job.
+  my $analyse_command="$path_to_python $path_to_pkpgcounter $doc";
+
+  # Launch the command !
+  my $total_pages=qx{$analyse_command 2> /dev/null};
+
+  # Check return code.
+  my $rcode = $?;
+  my $crcode = $rcode >> 8;
+
+  if ($rcode == 0){
+    # This contains the actual return value of the child process:
+    log_debug ("  Analyzer returned: " . $crcode);
+    log_debug ("  Analyzing successful !") unless ($crcode != 0);
+    log_debug ("  Number of pages: $total_pages");
+  }
+  else{
+    # We weren't able to analyze the document...
+    log_debug ("  Analyzer returned: " . $crcode);
+    log_debug ("  Analyzer caught signal ?: ". ($rcode & 127));
+    log_debug ("  Analyzer core dumped ? : ". ($rcode & 128));
+    log_failure ("  Couldn't analyze the document; Return code: ".$rcode);
+
+    # Inform the rest of the script that cointing failed. For example,
+    # this will prevent deletion of the temp file to enable future
+    # investigations.
+    $count_failure = 1;
+  }
+
+  # If counting the pages failed in either way, return 0 so the failure
+  # appears in the database without affecting the stats. Remember that
+  # $count_failure is a global variable, it will be used again at the
+  # bottom of this script.
+  if ($count_failure) {
+    return 0;
+  }
+  # If all went fine, simply return the number of pages.
+  else {
+    return $total_pages;
+  }
+}
+
+# End of functions... Let's begin with the script :) !!!
+
+# Cups backends work this way that when called without argument, they must output
+# which devices they manage. As we don't manage anything but just call other backends
+# to process the printing, we've got to call them one by one, modifying parts of the
+# output. This way, Cups believes that we manage all printers (I stolen this idea
+# from Pykota, free software rocks!) ;-)
+# NOTE: Cups only calls backends without arguments during its initialisation
+# procedure (Or when reloaded), to see what printers are managed. This should never occur
+# during normal operation.
+if (@ARGV == 0){
+  # Search for a lockfile, and exit if it exists.
+  # This is mainly to avoid calling ourselves when scanning the backend directory
+  # if the corresponding test (see below) fails. Mind you, a P4 XEON 2GHz HT managed to stay
+  # up during 20 second when this script started calling itself in an infinite loop !
+  # The Kernel, however, is so altruistic that it kept killing processes to free up
+  # memory so this script could bring down the system... ;-)
+  # Remember that we don't need any lockfile when called to process a print job (ie
+  # with 6 or 7 arguments, see below), and using it would prevent multiple print jobs at a time,
+  # somewhat strange for a print server....
+  if (-e $lockfile){
+    log_failure (
+                "Another instance of $me is already running... Bye !",
+                "(If not, manually remove '$lockfile',",
+                "and restart/reload Cups)"
+    );
+    exit 1;
+  }
+  # So, if we managed to get here, it's time to create this lockfile...
+  open (LOCKFILE, ">".$lockfile) or die "ERROR: $me: Unable to create lockfile '$lockfile', exiting !";
+
+  # Feed the logfile... Note that in our current running mode, we must not
+  # use STDOUT for anything else than listing printers. So, we must take care
+  # to use only log_success(), log_failure() or log_debug(), and nothing else.
+  log_success ("Reload: Polling backends.");
+  log_debug (
+              "---> Started at ".strftime ("%a %b %e %H:%M:%S %Y", localtime),
+              "  Command line: $0",
+              "  Arguments: ".join("|", @ARGV),
+              "  I was called with 0 arguments, let's fool Cups !"
+  );
+
+  # Get the list of all backends from the Cups backends directory:
+  my @backends_list = glob($backends_dir.'/*');
+
+  # We gonna echo this list in the logfile, so:
+  log_debug ("  Candidate backends list:");
+
+  # Let's call each backend, filter output, and echo all on STDIN:
+
+  # This is the pattern that'll check the output of the backends,
+  # and extract the four fields:
+  my $motif = "^(\\S+)\\s(\\S+)\\s\"([^\"]+)\"\\s\"([^\"]+)\"\$";
+
+  foreach my $backend (@backends_list){
+    # Avoid calling ourselves, we are not in need of a brutal reset, are we ?
+    # In the same time, avoid calling non-executable files or dirs.
+    next if ($backend =~ /$0/ || ! -f $backend || ! -x $backend);   # /!\ TODO: Doublecheck this line so that it ALWAYS work !
+
+    # Echo the name of the backend to the logfile...
+    log_debug ("    - $backend");
+
+    # ...And execute the backend, feeding a list with its output.
+    ## TODO !!! : Security problem here, we shouldn't run any exe here before verifying
+    ## the owner and perms, as someone could have put a malware in the backend directory...
+    ## Well, in fact, this is not our problem, as if someone manages to write there, he has
+    ## already root access...
+    my @output = `$backend`;
+
+    # A given backend may manage many devices, thus outputing many lines:
+    # we process each line.
+    foreach my $ligne (@output){
+      # Check the line against the pattern, and extract the fields
+      # in the special variables $1, $2, $3 and $4
+      if ($ligne =~ $motif){
+        # Then we output what Cups expects, lightly modified so we appear
+        # in the device list when configuring a new printer: For example,
+        # a "socket" printer will appear as "jasmine:socket://hostname:port"
+        print "$1 $me:$2 \"$3\" \"$4 (Quota Managed)\"\n";
+        # Don't forget the logfile: It's so hungry !
+        log_debug ("      $1 $me:$2 \"$3\" \"$4 (Quota Managed)\"");
+      }
+      # If the backend spited a line that doesn't fit our needs, ignore it,
+      # but mention it in the logs.
+      else {
+        log_failure ("Invalid line returned by a backend: \"$ligne\"");
+      }
+    }
+  }
+
+  log_debug ("---> Ended at: ".strftime ("%a %b %e %H:%M:%S %Y", localtime));
+
+  # Remove the lock file...
+  close LOCKFILE or log_failure ("Unable to close file '$lockfile'");
+  unlink $lockfile or log_failure ("Unable to remove file '$lockfile'");
+
+  # Log success
+  log_success("Reload successful.");
+
+  # Clean and exit
+  closelog();
+  exit 0;
+}
+
+# OK, back to the main part of the script; We saw what needed to be done when
+# called without argument. Now, when Cups has finished its init, it only calls
+# us with 5 or 6 arguments. If there are 6, we gotta read the file to print
+# ourselves from the given path. If only 5 are given, the file is sent by STDIN.
+else {
+  log_debug ("---> Print job started at ".strftime ("%a %b %e %H:%M:%S %Y", localtime));
+  log_debug ("  Command line: $0");
+  log_debug ("  Arguments: ".join("|", @ARGV));
+  log_debug ("  Environnement:\n");
+  while ( my ($key,$value) = each %ENV) {
+    log_debug ("    - $key= $value");
+  }
+
+  # If we were called with the wrong number of arguments, exit.
+  if ( (@ARGV < 5) || (@ARGV > 6) ){
+    log_failure ("  Wrong parameter count. Is Cups mad ?");
+    log_debug ("---> Ended at: ".strftime ("%a %b %e %H:%M:%S %Y", localtime));
+    die "ERROR: $me: Too few or too many parameters, exiting!";
+  }
+
+  # This will contain the path to the file to print.
+  my $doc;
+  # This one is used for the temp file, if needeed.
+  my $tmpfile;
+
+  # If we were called with 5 arguments, read from STDIN to a tempfile:
+  if (@ARGV == 5){
+    # TODO : This is not portable, use File::Temp instead !
+    my $tmpcmd = "/bin/mktemp </dev/null ".$ENV{"TMPDIR"}."/print.XXXXXX";
+    $tmpfile = qx{$tmpcmd};
+    chomp $tmpfile;
+    # TODO : This is not portable too !
+    qx{cat > $tmpfile};
+
+    # ...And set $tmpfile to be the document to print
+    $doc = $tmpfile;
+    log_debug ("  Called with 5 args, \$doc is read from STDIN and the tempfile is $doc");
+  }
+
+  # If called with 6 arguments, the 6th is the path of the file to print.
+  # TODO : Check if that *really* means that the file is raw data and we cannot
+  #        count pages... And look if we really need to manage copies.
+  if (@ARGV == 6){
+    $doc = $ARGV[5];
+    chomp $doc;
+    log_debug ("  Called with 6 args, \$doc is $doc");
+  }
+
+  log_debug ("  Document: $doc");
+  # Sleep to have time to take a copy of the spooled file (For test purpose)
+  #sleep 60;
+
+  # Extract arguments passed to us, to send them to the real backend.
+  # ...We gonna modify some of them. There may be better ways of doing this
+  # using 'unshift', 'push', etc...
+  my ($job_id, $user, $title, $copies, $options, $file) = @ARGV;
+
+  # So now we are able to count pages :
+  my $pg_count=count_pages $doc;
+
+  # We'll now extract the backend to call from the DEVICE_URI.
+  # We first extract the real URI that would be used without our backend
+  # in the processing chain:
+  my $real_uri = $ENV{DEVICE_URI};
+  $real_uri =~ s/^$me:(.*)/$1/;
+  my $real_backend = $real_uri;
+  $real_backend =~ s/^([^:\/]+)(.*|$)/$1/;
+  log_debug ("  \$real_uri= $real_uri");
+  log_debug ("  \$real_backend= $real_backend");
+
+  # Set the env var DEVICE_URI for use by the real backend.
+  # This seems mandatory for backends like 'smb' !
+  $ENV{DEVICE_URI} = $real_uri;
+
+  # We'll need the printer name later: Time to extract it from env
+  my $printer=$ENV{PRINTER};
+
+  # Insert the real URI as the first argument to the real backend, so we can lie
+  # to him about his name (See the 'exec' manual), and modify/add the 'file'
+  # argument so that it points to our '$doc' file.
+  my @args = ($real_uri, $job_id, $user, $title, $copies, $options, $doc);
+
+  # Time to execute the real backend...
+  my $backend_cmd = $backends_dir."/".$real_backend;
+  log_debug ("  Calling backend: $backend_cmd ".join(" ", @args));
+  system $backend_cmd @args;
+
+  # At this point, our print job should have been finally processed.
+  # Check the return value to be sure that the subprocess launched correctly :
+  my $rcode = $?;
+  my $crcode = $rcode >> 8;
+
+  if ($rcode == 0){
+    # This contains the actual return value of the child process:
+    log_debug ("Real backend returned: ". $crcode);
+    # Well, I don't think that's true, the job can be lost after beeing sent to the
+    # real backend, but.....
+    log_debug ("Printing successful on $real_uri !") unless ($crcode != 0);
+    my $total=$copies*$pg_count;
+    log_success ("User '$user' printed ".$total." pages on printer '$printer'");
+
+    # Get this server's hostname
+    my $hostname = hostname;
+
+    # Here we log this print job in the database...
+    my $dsn = "DBI:mysql:database=$DBdatabase;host=$DBhost";
+    my $dbh = DBI->connect($dsn, $DBlogin, $DBpassword) or log_failure ("  Couldn't connect to the MySQL server !");
+		
+    # Escape the fields to be inserted
+    my @sqlArgs=map($dbh->quote($_), ($job_id, $printer,$user, $hostname, $title, $copies, $pg_count, $options, $doc));
+		
+    my $query="INSERT INTO jobs_log (date, job_id, printer, user, server, title, copies,pages, options, doc)";
+    $query.=" VALUES (now(), ".join (", ", @sqlArgs).")";
+    $dbh->do($query) or do{
+      # If the query fails, log it, and set the failure flag.
+      $count_failure = 1;
+
+      log_failure ("  DB insert query failed");
+      log_debug("  Query : $query");
+      log_debug("  MySQL error : ".$dbh->errstr);
+      log_debug(@sqlArgs);
+    };
+  }
+  else{
+    # We weren't able to launch the real backend...
+    # This contains the actual return value of the child process:
+    log_debug ("  Real backend returned: ". $crcode);
+    log_debug ("  Backend caught signal: ". ($rcode & 127));
+    log_debug ("  Did backend core dumped ? : ". ($rcode & 128));
+    log_failure ("  Couldn't lauch the real backend; Return code: ".$rcode);
+
+    # We should exit(1) here, but this would be annoying, so let it this way
+    # for now. Instead, as a problem occured, we keep the temps file (See below)
+  }
+
+  # Soldiers, clean this mess and get out of here ! But, if we are in developer
+  # mode ($Debug_Mode >= 2), do not delete the tempfiles so one can examine it.
+  # Then 2 solutions :
+  #   - If we are running with 5 arguments, we received the document through
+  #   STDIN so we already have a copy in $ENV{"TMPDIR"} : We just have to avoid
+  #   deleting it.
+  #   - If we are running with 6 arguments, the tempfile was already created by
+  #   CUPS and we received its path a the 6th arg. We just need to grab a copy
+  #   of it before CUPS deletes it.
+  #   
+  # Anyway, if counting the pages or inserting the result in the DB failed, we
+  # always warn the sysadmin. Moreover, if in debug mode ($Debug_Mode = 1), we
+  # need to keep a copy of the document as seen before.
+  if ($Debug_Mode > 1) {
+    # Developer mode : Keep all files inconditionally
+    log_debug("Warning, developer mode on, tempfile not removed to enable investigation. Please clean $ENV{TMPDIR} manually !!!");
+    copy($doc,$ENV{"TMPDIR"}) if ($doc);
+    $count_failure and log_failure(" Accounting failure : Whether the page accounting or the DB insert failed !");
+  }
+  elsif ($Debug_Mode == 1) {
+    # Simple debug mode : Keep file only if an error occured
+    if ($count_failure) {
+      log_failure(" Accounting failure : Whether the page accounting or the DB insert failed !");
+      log_debug("Warning, tempfile not removed to enable investigation. Please clean $ENV{TMPDIR} manually !!!");
+      copy($doc,$ENV{"TMPDIR"}) if ($doc);
+    }
+    else {
+      unlink $tmpfile if (defined $tmpfile);
+    }
+  }
+  else {
+    unlink $tmpfile if (defined $tmpfile);
+  }
+
+  # Close log...
+  log_debug ("---> Ended at: ".strftime ("%a %b %e %H:%M:%S %Y", localtime));
+  closelog ();
+  exit 0;
+}

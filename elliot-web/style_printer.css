@@ -1,0 +1,155 @@
+/* JASmine, print accounting system for Cups.
+ Copyright (C) 2005  Nayco.
+
+ (Please read the COPYING file)
+
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 2
+ of the License, or (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. */
+
+/* Style_printer.css: Stylesheet for printing */
+
+body {
+  font-family: sans-serif;
+  font-size: 10px;
+  background: #FFFFFF;
+  color: #000000;
+}
+a {
+  text-decoration: none;
+  color: #000000;
+  /*border-bottom: 1px dotted #000000;*/
+}
+
+input, fieldset {
+  border: 1px solid #000000;
+  -moz-border-radius: 5px;
+}
+input {
+  padding:2px;
+}
+fieldset {
+  margin: 1em 0 1em 0;
+}
+div.header{
+  margin: 0px;
+  text-align: right;
+}
+div.header h1{
+  font-family: cursive;
+  font-size: 220%;
+  padding: 0;
+  margin: 0;
+}
+div.header p{
+  margin: -0.5em 0 0 0;
+  padding: 0;
+}
+
+/* Hide the menu ! */
+div.menu{
+  display: none;
+}
+
+/* Auth box is hidden too */
+div.auth{
+  display: none;
+}
+
+div.report_page{
+  margin: 2em;
+  padding: 1em;
+  border-left: 1px dashed #CCCCCC;
+  border-top: 1px dashed #CCCCCC;
+}
+div.report_page p{
+  padding-left: 25px;
+}
+table{
+  border: solid 1px #66CC99;
+  margin-left: auto;
+  margin-right: auto;
+  width: 75%;
+  border-collapse: collapse; 
+}
+caption{
+  font-size: 80%;
+  margin-left: 50px;
+  caption-side: bottom; 
+  width: auto;
+  text-align: left;
+  padding-left: 1em;
+}
+th {
+  border: 1px solid #66CC99;
+  background: #66CC99;
+  color: #FFFFFF;
+  width: 1em;
+  padding: 2px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+th + th{
+  width: auto;
+}
+td {
+  border: solid 1px #66CC99;
+  text-align: left;
+  padding: 2px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+td + td, th + td{
+  text-align: right;
+}
+
+/* Error reporting */
+div.error_block {
+  padding: 1em;
+}
+div.error_block h2 {
+  border-bottom: 1px solid black;
+  color: black;
+}
+div.error_block h3 {
+  color: #FF6666;
+}
+div.error_block dl{
+  border: 1px solid #FF6666;
+  padding: 1em;
+  background: #FFCCCC;
+}
+div.error_block dt {
+  color: gray;
+}
+div.error_block dt strong{
+  text-decoration: underline;
+  color: black;
+}
+div.error_block dd {
+  font-style: italic;
+  margin-bottom: 1em;
+}
+
+/* footer */
+.footerinc{
+  clear: both;
+  text-align: center;
+}
+.footerinc a img {
+  border: none;
+}
+.footerinc hr {
+/* hide it for now */
+  display: none;
+}
