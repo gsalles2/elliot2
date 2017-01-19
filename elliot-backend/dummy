@@ -24,7 +24,7 @@
 
 if [ $# = 0 ]
 then
-	echo 'direct dummy "Unknown" "Really virtual printer for testing Cups"'
+	echo 'direct dummy "Unknown" "Impressora Virtual para teste"'
 else
 	logger=`which logger`
 	$logger "Dummy printer backend !!!"
