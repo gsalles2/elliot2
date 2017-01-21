@@ -34,7 +34,7 @@
         </li>
 	
 	<li id="menu_find">
-		 <span title="Find a report or an object">Procurar</span>
+		<a href="index.php?section=find&amp;searchType=user"><span title="Procura de relatórios"> Procurar</span></a>
 <!-- Sub Menus
 
 			<ul>

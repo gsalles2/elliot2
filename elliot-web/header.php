@@ -1,5 +1,5 @@
 <?php
-/* JASmine, print accounting system for Cups.
+/* Elliot, print accounting system for Cups.
  Copyright (C) Nayco.
 
  (Please read the COPYING file)
@@ -39,10 +39,4 @@
      <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
   </head>
   <body>
-    <div class="header">
-      <h1>ELLIOT</h1>
-      <!--  &nbsp; &#12472;&#12515;&#12473;&#12511;&#12531;</h1> -->
-      <p>
-	<em>Printer Accounting </em>
-      </p>
-    </div>
+  </body>

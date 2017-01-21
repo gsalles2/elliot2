@@ -88,16 +88,16 @@ div.menu > ul {
   cursor: pointer;
   margin: 0 0 0 1em;
 }
-div.menu > ul > li {
-  margin-top: -2px;
-}
+/*div.menu > ul > li {
+  margin-top: x;
+}*/
 div.menu > ul span {
   margin: 0;
   padding: 0 1em 2px 1em;
   color: #666666;
 }
 div.menu > ul li:hover span {
-  color: #FFFFFF;
+  color: #68bc44;
 }
 div.menu > ul li ul {
   border: 1px solid;
@@ -124,8 +124,6 @@ div.menu > ul li ul li {
 div.menu a:link, div.menu a:visited, div.menu a:active {
   color: #666666;
   display: block;
-  margin: 0;
-  padding: 2px 1em 2px 1em;
 }
 div.menu a:hover {
   color: #68bc55;
@@ -142,7 +140,6 @@ div.report_page{
   padding: 1em;
   border-left: 1px dashed #CCCCCC;
   border-top: 1px dashed #CCCCCC;
-  background: url("images/JasmineFlowerGlass.jpg");
   background-position: 0 0;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -164,8 +161,6 @@ table{
 table a:link, table a:visited {
   color: #999999;
   display: block;
-  margin: -2px;
-  padding: 2px;
 }
 table a:active, table a:hover {
   color: #294D21;
