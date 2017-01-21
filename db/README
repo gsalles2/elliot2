@@ -1,0 +1,16 @@
+======================================
+ Elliot, print accounting para o  Cups
+======================================
+
+Fizemos um acerto no ultimo arquivo jasmine.sql, agora ele é elliot.sql ( =P ).
+
+Este arquivo .sql serve para a importação das tabelas e colunas para o banco de dados MySQL.
+
+1- Crie um DB (ex: CREATE DATABASE print)
+
+2- Importe o arquivo elliot.sql
+
+
+Gostaria de agradecer ao J.Ricardo que me ajudou muito a resolver os bugs da importação.
+
+Á bientôt
