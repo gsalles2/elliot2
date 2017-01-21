@@ -1,5 +1,5 @@
-/* JASmine, print accounting system for Cups.
- Copyright (C) 2005  Nayco.
+/* Elliot, print accounting system for Cups.
+ Copyright (C) 2017  Nayco.
 
  (Please read the COPYING file)
 
@@ -17,7 +17,6 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. */
 
-/* Style.css: Stylesheet for web standards-compliant browsers */
 
 body {
   font-family: sans-serif;
@@ -55,8 +54,6 @@ fieldset {
 }
 div.header{
   margin: 0px;
-  text-align: right;
-  height: 50px;
   overflow: hidden;
 }
 div.header h1{
@@ -72,10 +69,10 @@ div.header p{
 
 /* Menu block */
 div.menu {
-  border: #999999 1px solid;
-  margin-left: 300px;
-  /*background: #FFFFFF url("images/elliotlogoglass.jpg") no-repeat 0 0 fixed;*/
-  font-size: 12px; padding:0.5em;
+  font-size: 12px;
+  text-align:center; 
+  vertical-align: center
+  position:absolute;
 }
 div.menu h2 {
   display: none;
@@ -93,7 +90,6 @@ div.menu > ul {
 }
 div.menu > ul > li {
   margin-top: -2px;
-  float: left;
 }
 div.menu > ul span {
   margin: 0;
@@ -101,7 +97,6 @@ div.menu > ul span {
   color: #666666;
 }
 div.menu > ul li:hover span {
-  background: #294D21;
   color: #FFFFFF;
 }
 div.menu > ul li ul {
@@ -119,12 +114,13 @@ div.menu > ul li ul {
 div.menu > ul li:hover ul {
   display: block;
 }
+/* div do sub-menu */
 div.menu > ul li ul li {
   margin: 0;
   padding-left: 1px;
-  background: #FFF;
   border-left: solid 1em #CCC;
 }
+
 div.menu a:link, div.menu a:visited, div.menu a:active {
   color: #666666;
   display: block;
@@ -132,8 +128,7 @@ div.menu a:link, div.menu a:visited, div.menu a:active {
   padding: 2px 1em 2px 1em;
 }
 div.menu a:hover {
-  color: #FFFFFF;
-  background: #294D21;
+  color: #68bc55;
 }
 
 /* Auth box */

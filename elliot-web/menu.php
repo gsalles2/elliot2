@@ -1,5 +1,5 @@
 <?php
-/* JASmine, print accounting system for Cups.
+/* Elliot, print accounting system for Cups.
  Copyright (C) Nayco.
 
  (Please read the COPYING file)
@@ -21,33 +21,34 @@
   /* Menu.php: Displays the main menu */
        
        
-?>    <div class="menu">
-      <h2>Menu</h2>
+?>   
+
+ <div class="menu"><!-- Aqui começa o menu, cada <li> é um menu -->
       <ul>
-        <li id="menu_general">
-	  <span title="Main section">Home</span>
-          <ul>
-	    <li>
-	      <a href="index.php?section=help" title="Get some help using JASmine">Ajuda</a>
-	    </li>
-          </ul>
+	<li id="menu_general">
+		 <span title="Main section">Home</span>
 	</li>
-        <li id="menu_reports">
-               <a href="index.php?section=summary" title="Display the summary"><span title="Reports section">Relatorios</span></a>
+	
+	<li id="menu_reports">
+		<a href="index.php?section=summary" title="Display the summary"><span title="Reports section">Relatorios</span></a>
         </li>
+	
 	<li id="menu_find">
-          <span title="Find a report or an object">Procurar</span>
-          <ul>
-            <li>
-              <a href="index.php?section=find&amp;searchType=printer" title="Find a printer">Impressoras</a>
-            </li>
-	    <li>
-		<a href="index.php?section=find&amp;searchType=user" title="Find a user">Usuários</a>
-            </li>
-           <!--  <li>
-		<a href="index.php?section=find&amp;searchType=server" title="Find a server">Servidores</a>
-            </li> -->
-          </ul>
-        </li>
+		 <span title="Find a report or an object">Procurar</span>
+<!-- Sub Menus
+
+			<ul>
+				<li>
+					<a href="index.php?section=find&amp;searchType=printer" title="Find a printer">Impressoras</a>
+				</li>
+				<li>
+					<a href="index.php?section=find&amp;searchType=user" title="Find a user">Usuários</a>
+				</li>
+          		</ul>
+-->
+	</li>
+	<li>
+	  <span  href="index.php?section=help" title="Ajuda para usar o Elliot">Ajuda</span>
+	</li>   
       </ul>
     </div>
