@@ -1,26 +1,15 @@
-====================================
- JASmine, print accounting for Cups
-     (c) Nayco
-====================================
+======================================
+ Elliot, print accounting para o  Cups
+======================================
 
-This is JASmine version 0.0.3. This code is in early
-developpement state, so do not expect for miracles !
+Este é o Elliot versão 0.0.1. Este projeto está em andamento
 
-However, it already accounts prints jobs and stores
-the results to a MySQL database, and displays simple
-reports on a web page; but sometimes these results 
-may not be accurate, so do not use these reports
-for print billing !!!
+Estamos remodulando um projeto já existente que é o JASmine.
+A nossa intenção é ampliar as funcionalidades desse projeto já existente e também o seu layout.
 
-Anyway, feel free to report bugs, send comments or
-feature requests on the mailing lists. See
-  http://jasmine.berlios.de
-to know how to subscribe.
+Este software é LIVRE, liberado sob os termos da GNU GPL.
+Estamos trabalhando para melhorar e deixar ele completo o mais rápido possível.
 
-Be sure to read the INSTALL file to setup correctly
-this software.
+Agradeçemos ao desenvolvedores do JASmine e espero que se orgulhem das modificações que estamos fazendo.
 
-This software is FREE SOFTWARE, released under the
-terms of GNU GPL, read the LICENCE file for more info.
-
-Enjoy !
+Á bientôt
