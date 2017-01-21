@@ -1,5 +1,5 @@
 <?php
-/* JASmine, print accounting system for Cups.
+/* Elliot, print accounting system for Cups.
  Copyright (C) Nayco.
 
  (Please read the COPYING file)

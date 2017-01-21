@@ -53,7 +53,7 @@
 -->
 		</li>
 		<li>
-			<span  href="index.php?section=help" title="Ajuda para usar o Elliot">Ajuda</span>
+		<a href="index.php?section=find&amp;searchType=help "><span  title="Manual do Elliot">Ajuda</span></a>
 		</li>   
 	      </ul>
 	</div>
