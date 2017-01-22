@@ -30,7 +30,7 @@
 	<div class="menu"><!-- Aqui começa o menu, cada <li> é um menu -->
 	      <ul>
 		<li id="menu_general">
-			 <span title="Main section">Home</span>
+		<a href="index.php?sextion=index" title="Home"> <span title="Main section">Home</span></a>
 		</li>
 	
 		<li id="menu_reports">

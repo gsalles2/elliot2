@@ -21,17 +21,17 @@
 body {
   font-family: sans-serif;
   font-size: 13px;
-  background: #FFFFFF url("images/elliotlogo.jpg");
+  background: #fff url("images/elliotlogo.jpg");
   background-position: 0 0;
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
 a:link, a:visited {
   text-decoration: none;
-  color: #666666;
+  color: #955907;
 }
 a:hover, a:active {
-  color: #294D21;
+  color: #004914;
 }
 
 h1,h2,h3,h4,h5,h6 {
@@ -70,12 +70,12 @@ div.header p{
 /* Menu */
 
 div.salles{
-  margin: 15px auto;
+  margin: 22px auto;
 
 
 }
 div.menu {
-  margin: 0 100px;
+  margin-left:140px;
   font-size: 15px;
   text-align:center; 
   vertical-align: center
@@ -95,10 +95,11 @@ div.menu > ul {
 }
 div.menu > ul span {
   margin: 0;
-  color: #26491e;
+  color: #004914;
 }
 div.menu > ul li:hover span {
-  color: #1caf84;
+  color: #955907;
+  font-weight: bold;
 }
 div.menu > ul li ul {
   list-style-type: none;
@@ -111,7 +112,7 @@ div.box_menu{
   float: right;
   height:80px;
   width:270px;
-  background: #29492d;
+  background: #000;
   border-radius:7px; /*Arredonda a borda*/
 }
 /* div do sub-menu */
@@ -122,11 +123,11 @@ div.menu > ul li ul li {
 }
 
 div.menu a:link, div.menu a:visited, div.menu a:active {
-  color: #666666;
+  color: #955907;
   display: block;
 }
 div.menu a:hover {
-  color: #68bc55;
+  color: #955907;
 }
 
 /* Auth box */
@@ -156,7 +157,6 @@ table{
   border: solid 1px #294D21;
   margin-left: auto;
   margin-right: auto;
-  width: 85%;
 }
 table a:link, table a:visited {
   color: #999999;
@@ -182,7 +182,6 @@ th {
   padding-right: 10px;
 }
 th + th{
-  width: auto;
 }
 tr:hover {
   background: #CCFFCC;
