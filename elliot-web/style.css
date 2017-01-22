@@ -115,6 +115,18 @@ div.box_menu{
   background: #000;
   border-radius:7px; /*Arredonda a borda*/
 }
+div.box_menu p{
+  margin: 3px 50px;
+  text-align: center;
+  font-weight:bold;
+  color: #fff;
+}
+div.box_image{
+  margin: 5px 4px;
+  float: left;
+
+
+}
 /* div do sub-menu */
 div.menu > ul li ul li {
   margin: 0;

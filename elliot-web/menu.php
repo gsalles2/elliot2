@@ -24,8 +24,13 @@
 ?>
 
 <div class="salles">   
-	<div class="box_menu">
-	
+<div class="box_menu">
+		<div class="box_image">
+	<p>Total de impressões:</p>
+
+      <? $source="jas_getServerTotalPages"; ?>
+<img src="images/paper2.png" />
+		</div>
 	</div>
 	<div class="menu"><!-- Aqui começa o menu, cada <li> é um menu -->
 	      <ul>
