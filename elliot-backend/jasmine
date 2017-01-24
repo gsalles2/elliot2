@@ -25,10 +25,10 @@
 
 # MySQL server related stuff: You have to create the corresponding
 # account, database and table on your MySQL server
-my $DBhost="MYSQL_HOST";
-my $DBlogin="MYSQL_LOGIN";
-my $DBpassword="MYSQL_PASS";
-my $DBdatabase="MYSQL_DB";
+my $DBhost="localhost";
+my $DBlogin="root";
+my $DBpassword="nike1522+";
+my $DBdatabase="print";
 
 # If you want to use Syslog, set this to 1. To disable, set to 0.
 my $Want_Sys_Syslog=1;
@@ -38,7 +38,7 @@ my $Want_Sys_Syslog=1;
 #   0 : Use this in production, debug disabled
 #   1 : Installation/configuration phase.
 #   2 : For developers only, will fill your harddrive with tempfiles !
-my $Debug_Mode=1;
+my $Debug_Mode=0;
 
 # Location of the python and pkpgcounter binaries
 my $path_to_pkpgcounter="/usr/bin/pkpgcounter";
@@ -314,7 +314,7 @@ if (@ARGV == 0){
       if ($ligne =~ $motif){
         # Then we output what Cups expects, lightly modified so we appear
         # in the device list when configuring a new printer: For example,
-        # a "socket" printer will appear as "jasmine:socket://hostname:port"
+        # a "socket" printer will appear as "elliot:socket://hostname:port"
         print "$1 $me:$2 \"$3\" \"$4 (Quota Managed)\"\n";
         # Don't forget the logfile: It's so hungry !
         log_debug ("      $1 $me:$2 \"$3\" \"$4 (Quota Managed)\"");
