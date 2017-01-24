@@ -21,11 +21,11 @@
   // config.php: global variables and parameters.
 
   // Various vars
-  $DEFAULT_STARTPAGE="summary";
+  $DEFAULT_STARTPAGE="home.php";
 
   // Database vars
   $DB_host="localhost";
   $DB_login="root";
-  $DB_pass="password";
+  $DB_pass="Password12";
   $DB_db="print";
 ?>

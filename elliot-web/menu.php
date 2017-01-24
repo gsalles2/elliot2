@@ -38,7 +38,7 @@
 	<div class="menu"><!-- Aqui começa o menu, cada <li> é um menu -->
 	      <ul>
 		<li id="menu_general">
-		<a href="index.php?sextion=index" title="Home"> <span title="Main section">Home</span></a>
+		<a href="home.php" title="Home"> <span title="Main section">Home</span></a>
 		</li>
 	
 		<li id="menu_reports">

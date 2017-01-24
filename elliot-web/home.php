@@ -21,31 +21,33 @@
   /* Index.php: Main file */
 
   // Do some includes.
+
+
   include_once("jasConfig.php");
   include_once("config.php");
   include_once("libError.php");
   include_once("header.php");
   include_once("menu.php");
-  
 
-  if (!file_exists("config.php")){
-    $message="Config file not found !";
-    $hint="Don't forget to copy \"config.php.dist\" to \"config.php\", then edit ";
-    $hint.="it to suit your needs.";
-    ER_Handler::getInstance()->logCrit("No Config file", $message, $hint);
-  }
-
-?>    <div class="report_page">
-<?php
-  // Include a file to fill the main body of the page, based on the $_GET[section] variable.
-  // If the requested file is not found, fallback to $DEFAULT_STARTPAGE (Defined in config.php)
-  if (isset($_GET['section']) && file_exists($_GET['section'].".php")){
-    include_once($_GET['section'].".php");
-  }
-  else{
-    include_once($DEFAULT_STARTPAGE.".php");
-  }
 ?> 
+<div class="report_page">
+
+
+<h3>BEM VINDO AO ELLIOT</h3>
+<br>
+<p><h4>O Elliot é um sistema de relatórios integrado ao CUPS.</p>
+
+<p>Uma versão remodulada do grandioso JASmine.</p>
+<p>Por favor leiam os arquivos de licença e obtenha mais informações sobre os autores originas e também sobre nossas modificações.</p>
+
+<p>Esperamos que gostem do Elliot, ele é bem simpático e futuramente será mais interativo ^^(ele é um pouco tímido aínda).</p>
+
+<p><a href="index.php?section=help">Caso precise de ajuda veja nossos tutorias</a></p>
+
+<p>Façam bom proveito.</h4></p>
+<br>
+<p><i>À bientôt</i></p>
+
 </div>
 <?php
   // Display errors here
