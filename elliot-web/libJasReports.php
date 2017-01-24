@@ -351,8 +351,7 @@
       //return DB_Dump_Result($result);
 
       $tableUR=new TBL_table();
-      $tableUR->setCaption("User rankings");
-      $tableUR->setColumns(array('user', 'total'));
+      $tableUR->setColumns(array('Usuários', 'Total'));
 
       global $jas_userStatsPage;
 
@@ -405,7 +404,6 @@
       //return DB_Dump_Result($result);
 
       $tablePR=new TBL_table();
-      $tablePR->setCaption("Printer rankings");
       $tablePR->setColumns(array('printer', 'total'));
 
       global $jas_printerStatsPage;
@@ -438,6 +436,7 @@
       ER_Handler::getInstance()->logCrit($source, $message, $hint);
       return false;
     }
+
     // Clean the input variables and prepare query
     $count=DB_escape_string($count, true);
 
@@ -471,6 +470,46 @@
       return false;
     }
   }
+
+
+      /*---------------------------*/
+
+   /*jas_getServertotal:Retorna o total de impressões do Servidor */
+  function jas_getServertotal($count){
+    if (!$count){
+      $source="jas_getServertotal";
+      $message="Missing number of results to return !";
+      $hint="Please specify \$count for this function.";
+      ER_Handler::getInstance()->logCrit($source, $message, $hint);
+      return false;
+    }
+
+    // Clean the input variables and prepare query
+    $count=DB_escape_string($count, true);
+
+    // Build the query
+    $query="SELECT server,SUM(copies*pages) as total FROM jobs_log ";
+    $query.="GROUP BY server ORDER BY total DESC LIMIT $count";
+
+  if($result=DB_query($query)){ //Assignment !
+      //return DB_Dump_Result($result);
+
+      $tableSR=new TBL_table();
+      $tableSR->setColumns(array('Servidor', 'Total de impressões'));
+      
+      global $jas_serverStatsPage;
+
+      while ($row=mysql_fetch_assoc($result)){
+        if (isset($jas_serverStatsPage))
+          
+        $tableSR->addRow($row);
+      }
+
+      mysql_free_result($result);
+      return $tableSR->displayTable('20');
+    }
+  }
+    /*-------------------------------*/
 
   /* jas_searchObject: Searches for an object (User, printer...). The
      search string ($string) may contain MySQL jokers, and $objectType

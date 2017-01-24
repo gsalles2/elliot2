@@ -27,14 +27,17 @@
 
   $top10Users=jas_getUserRankings(10);
   $top5Printers=jas_getPrinterRankings(5);
-  $top5Servers=jas_getServerRankings(5)
+  /*$top5Servers=jas_getServerRankings(5)*/
 
-?><!-- Begin Summary -->
-<h2>Relatorios</h2>
-<h3>Top 10 Usuarios</h3>
+?><!-- Inicio do Sumario -->
+
+<h2>Relatórios</h2>
+<h3>Top 10 Usuáios</h3>
 <?=($top10Users)?$top10Users:"<p>An error occured, please check the error messages.</p>"?>
 <h3>Top 5 Impressoras</h3>
 <?=($top5Printers)?$top5Printers:"<p>An error occured, please check the error messages.</p>"?>
-<h3>Servers Top5</h3>
-<?=($top5Servers)?$top5Servers:"<p>An error occured, please check the error messages.</p>"?>
+<!-- <h3>Total de Impressões</h3>
+<?=($top5Servers)?$top5Servers:"<p>An error occured, please check the error messages.</p>"?> -->
+
+
 <!-- End Summary -->

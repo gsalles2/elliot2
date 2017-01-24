@@ -71,11 +71,9 @@ div.header p{
 
 div.salles{
   margin: 22px auto;
-
-
 }
 div.menu {
-  margin-left:140px;
+  margin-left:160px;
   font-size: 15px;
   text-align:center; 
   vertical-align: center
@@ -112,8 +110,13 @@ div.box_menu{
   float: right;
   height:80px;
   width:270px;
-  background: #000;
-  border-radius:7px; /*Arredonda a borda*/
+  background: #294D21;
+  border-radius:8px; /*Arredonda a borda*/
+}
+div.box_menu a {
+  background: #294D21;
+  color: #FFFFFF;
+  text-align: center;
 }
 div.box_menu p{
   margin: 3px 50px;
@@ -124,8 +127,6 @@ div.box_menu p{
 div.box_image{
   margin: 5px 4px;
   float: left;
-
-
 }
 /* div do sub-menu */
 div.menu > ul li ul li {
@@ -162,6 +163,10 @@ div.report_page p{
 }
 div.report_page h2 {
   text-align: center;
+  color: #1B3316;
+}
+div.report_page h3 {
+  color: #448037;
 }
 
 /* Tables */
@@ -186,14 +191,10 @@ caption{
   text-align: right;
 }
 th {
-  border: 1px solid #FFFFFF;
+  border: 2px solid #FFFFFF;
   background: #294D21;
   color: #FFFFFF;
-  padding: 2px;
-  padding-left: 10px;
-  padding-right: 10px;
-}
-th + th{
+  padding: 2px 10px 2px 10px;
 }
 tr:hover {
   background: #CCFFCC;

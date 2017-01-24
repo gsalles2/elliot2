@@ -70,7 +70,7 @@
     else{
       if ($result>0){
         echo "<p>\n";
-	echo "  <em>The following results were returned:</em>\n";
+	echo "  <em>Foram retornados os seguintes resultados:</em>\n";
         echo "  <ul>\n";
 	foreach ($result as $line){
 	  $lineDisplay=htmlentities($line);
@@ -80,7 +80,7 @@
 	echo "</p>\n";
       }
       else{
-        echo "  <em>No result.</em>\n";
+        echo "  <em>Sem Resultado</em>\n";
       }
     }      
     echo "<!-- End search results -->\n";
@@ -97,7 +97,7 @@
   else
     $iObjectType=$_POST['iSearchType'];
 ?>
-    <h2>Search for objects</h2>
+    <h2>Procura de relatórios</h2>
 <?php
   /*echo "\$_POST['iSearchString']=".$_POST['iSearchString']."\n<br />";
   echo "\$_POST['iSearchType']=".$_POST['iSearchType']."\n<br />";
@@ -105,10 +105,8 @@
   echo "\$iSearchString=$iSearchString\n<br />";
   echo "\$iObjectType=$iObjectType\n<br />"; */
 ?>
-    <h3>Help</h3>
-    <p>Some help...</p>
-<?php
-  display_search_form($iObjectType, $iSearchString);
+  <h3><a href="index.php?section=help" title="Manual de Ajuda">Ajuda?</a></h3></br>
+<?php display_search_form($iObjectType, $iSearchString);
 
   if (!empty($_POST['iSearchString'])){
     echo "    <h3>Results</h3>\n";

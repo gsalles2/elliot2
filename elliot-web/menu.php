@@ -19,18 +19,21 @@
  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. */
 
   /* Menu.php: Displays the main menu */
-       
-       
+
+
+    include_once("libJasReports.php");
+
+  DB_connect($DB_host,$DB_login,$DB_pass);
+  DB_select($DB_db);
+
+  $Total=jas_getServertotal(5)       
 ?>
 
-<div class="salles">   
-<div class="box_menu">
-		<div class="box_image">
-	<p>Total de impressões:</p>
-
-      <? $source="jas_getServerTotalPages"; ?>
-<img src="images/paper2.png" />
-		</div>
+<div class="salles">
+	<div class="box_menu">
+			<div class="box_server">
+			<h4><a href="index.php?section=show_server"> <?=($Total)?$Total:"<p>An error occured, please check the error messages.</p>"?></a></h4>
+			</div>
 	</div>
 	<div class="menu"><!-- Aqui começa o menu, cada <li> é um menu -->
 	      <ul>
@@ -58,7 +61,7 @@
 -->
 		</li>
 		<li>
-		<a href="index.php?section=find&amp;searchType=help "><span  title="Manual do Elliot">Ajuda</span></a>
+		<a href="index.php?section=help "><span  title="Manual do Elliot">Ajuda</span></a>
 		</li>   
 	      </ul>
 	</div>
