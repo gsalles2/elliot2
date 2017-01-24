@@ -26,6 +26,6 @@
   // Database vars
   $DB_host="localhost";
   $DB_login="root";
-  $DB_pass="Password12";
+  $DB_pass="password";
   $DB_db="print";
 ?>
