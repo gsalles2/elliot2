@@ -1,0 +1,40 @@
+# $Id: README 223 2006-09-11 20:10:09Z jerome $
+
+pkpgcounter : a generic Page Description Language parser
+
+(c) 2003, 2004, 2005, 2006 Jerome Alet <alet@librelogiciel.com>
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+====================================================================
+
+This directory contains a gzipped PostScript file, master.ps.gz, 
+obtained by printing to a file a part of the SlashDot.org website 
+from the Galeon web browser on July 2nd 2004. 
+
+When uncompressed, this 16 pages file can be used to test the 
+accuracy of the generic Page Description Language analyzer included 
+in pkpgcounter for different conversion outputs of gs. 
+
+To see if it works, simply launch :
+
+        $ ./runtests.sh
+        
+It should report 16 pages for each document. If it doesn't then 
+there's a bug in the generic Page Description Language analyzer. 
+Please report this to : alet@librelogiciel.com
+
+This script will also launch the test for the computation of
+ink coverage. Look at the file colors.pdf to see what the 
+results should look like.

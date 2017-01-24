@@ -1,0 +1,185 @@
+/* JASmine, print accounting system for Cups.
+ Copyright (C) 2005  Nayco.
+
+ (Please read the COPYING file)
+
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 2
+ of the License, or (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. */
+
+/* Style.css: Stylesheet for Web-Standards compliant browsers */
+
+body {
+  font-family: sans-serif;
+  font-size: 12px;
+  background: #FFFFFF url("images/JasmineFlower.jpg");
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+a:link, a:visited {
+  text-decoration: none;
+  color: #666666;
+}
+a:hover, a:active {
+  color: #66CC99;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  color: #999999;
+}
+input, fieldset {
+  border-color: #CCCCCC;
+  background: #FFFFFF;
+}
+input {
+  padding:2px;
+}
+fieldset {
+  margin: 1em 0 1em 0;
+  padding: 1em;
+}
+div.header{
+  margin: 0px;
+  text-align: right;
+  height: 50px;
+  overflow: hidden;
+}
+div.header h1{
+  font-family: cursive;
+  font-size: 220%;
+  padding: 0;
+  margin: 0;
+}
+div.header p{
+  margin: -0.5em 0 0 0;
+  padding: 0;
+}
+
+/* Menu block */
+div.menu{
+  width: 11em;
+  background-color: #FFFFFF;
+  border: #999999 1px dashed;
+  padding: 0.5em 1.5em 0.5em 1.5em;
+  float: left;
+}
+div.menu h2 {
+  margin: 0 0 0.3em 0;
+  font-size: 150%;
+}
+div.menu ul {
+  margin: 0;
+  padding: 0;
+}
+div.menu li {
+  margin: 0 0 0 1em;
+  padding: 0;
+}
+
+/* Auth box */
+div.auth{
+  display: none;
+}
+
+/* main block */
+div.report_page{
+  margin: 0 0 2em 12em;
+  padding: 1em;
+  border-left: 1px dashed #CCCCCC;
+  border-top: 1px dashed #CCCCCC;
+  background: #FFFFFF;
+}
+div.report_page p{
+  padding-left: 25px;
+}
+div.report_page h2 {
+  text-align: center;
+}
+
+/* Tables */
+table{
+  border: solid 1px #66CC99;
+  margin-left: 25px;
+  font-size: 100%;
+  border-collapse: collapse;
+}
+table a:link, table a:visited {
+  color: #999999;
+  display: block;
+}
+table a:active, table a:hover {
+  color: #66CC99;
+}
+caption{
+  font-size: 80%;
+  margin-left: 50px;
+  caption-side: bottom; 
+  width: auto;
+  text-align: left;
+  padding-left: 1em;
+}
+th {
+  border: 1px solid #FFFFFF;
+  background: #66CC99;
+  color: #FFFFFF;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+td {
+  border: solid 1px #66CC99;
+  text-align: left;
+  padding: 0.2em 1em 0.2em 1em;
+}
+
+/* Error reporting */
+div.error_block {
+  padding: 1em;
+  background: #FFFFFF;
+}
+div.error_block h2 {
+  border-bottom: 1px solid black;
+  color: black;
+}
+div.error_block h3 {
+  color: #FF6666;
+}
+div.error_block dl{
+  border: 1px solid #FF6666;
+  padding: 1em;
+  background: #FFCCCC;
+}
+div.error_block dt {
+  color: gray;
+}
+div.error_block dt strong{
+  text-decoration: underline;
+  color: black;
+}
+div.error_block dd {
+  font-style: italic;
+  margin-bottom: 1em;
+}
+
+/* footer */
+.footerinc{
+  clear: both;
+  text-align: center;
+}
+.footerinc a img {
+  border: none;
+}
+.footerinc hr {
+/* hide it for now */
+  display: none;
+}
