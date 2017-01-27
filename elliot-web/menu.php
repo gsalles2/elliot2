@@ -32,7 +32,7 @@
 <div class="salles">
 	<div class="box_menu">
 			<div class="box_server">
-			<h4><a href="index.php?section=show_server"> <?=($Total)?$Total:"<p>An error occured, please check the error messages.</p>"?></a></h4>
+			<b><?=($Total)?$Total:"<p>An error occured, please check the error messages.</p>"?></b>
 			</div>
 	</div>
 	<div class="menu"><!-- Aqui começa o menu, cada <li> é um menu -->

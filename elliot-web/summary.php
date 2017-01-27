@@ -36,8 +36,15 @@
 <?=($top10Users)?$top10Users:"<p>An error occured, please check the error messages.</p>"?>
 <h3>Top 5 Impressoras</h3>
 <?=($top5Printers)?$top5Printers:"<p>An error occured, please check the error messages.</p>"?>
-<!-- <h3>Total de Impressões</h3>
-<?=($top5Servers)?$top5Servers:"<p>An error occured, please check the error messages.</p>"?> -->
 
+<h3>Exportar dados</h3>
+<p>
+	Selecione o tipo de extensão que você quer seu relatório.
+</p>
+<p>
+<a href="export.php"><input type="submit" value="XLS" ></a>
+<input type="submit" value="PDF" >
+<input type="submit" value="TXT" >
+</p>
 
 <!-- End Summary -->

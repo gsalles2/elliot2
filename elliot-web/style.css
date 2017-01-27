@@ -35,10 +35,10 @@ a:hover, a:active {
 }
 
 h1,h2,h3,h4,h5,h6 {
-  color: #999999;
+  color: #111111;
 }
 input, fieldset {
-  border: 1px solid #999999;
+  border: 1px solid #111111;
   background: #FFFFFF;
   /* Non standards-compliant, but nice */
   -moz-border-radius: 5px;
@@ -176,7 +176,7 @@ table{
   margin-right: auto;
 }
 table a:link, table a:visited {
-  color: #999999;
+  color: #111111;
   display: block;
 }
 table a:active, table a:hover {
