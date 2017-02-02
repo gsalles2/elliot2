@@ -73,7 +73,7 @@ div.salles{
   margin: 22px auto;
 }
 div.menu {
-  margin-left:160px;
+  margin-left: 250px;
   font-size: 15px;
   text-align:center; 
   vertical-align: center
@@ -108,26 +108,20 @@ div.menu > ul li:hover ul {
 }
 div.box_menu{
   float: right;
-  height:80px;
+  height:65px;
   width:270px;
   background: #294D21;
   border-radius:8px; /*Arredonda a borda*/
+  padding: 15px 0 0 0;
 }
-div.box_menu a {
-  background: #294D21;
-  color: #FFFFFF;
-  text-align: center;
-}
+
 div.box_menu p{
   margin: 3px 50px;
   text-align: center;
   font-weight:bold;
   color: #fff;
 }
-div.box_image{
-  margin: 5px 4px;
-  float: left;
-}
+
 /* div do sub-menu */
 div.menu > ul li ul li {
   margin: 0;

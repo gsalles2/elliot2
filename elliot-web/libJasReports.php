@@ -351,7 +351,7 @@
       //return DB_Dump_Result($result);
 
       $tableUR=new TBL_table();
-      $tableUR->setColumns(array('Usuários', 'Total'));
+      $tableUR->setColumns(array('Usuários', 'Total de impressões'));
 
       global $jas_userStatsPage;
 
@@ -404,7 +404,7 @@
       //return DB_Dump_Result($result);
 
       $tablePR=new TBL_table();
-      $tablePR->setColumns(array('printer', 'total'));
+      $tablePR->setColumns(array('Impressoras', 'Total'));
 
       global $jas_printerStatsPage;
 
@@ -448,8 +448,7 @@
       //return DB_Dump_Result($result);
 
       $tableSR=new TBL_table();
-      $tableSR->setCaption("server rankings");
-      $tableSR->setColumns(array('server', 'total'));
+      $tableSR->setColumns(array('Servidor', 'Total'));
 
       global $jas_serverStatsPage;
 

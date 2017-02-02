@@ -1,54 +1,30 @@
-<?php
+<?php 
 
-    session_start();
-    include_once("config.php")
+	class Conexao { private $data = array();
+	protected $pdo = null;
+	public function __set($name, $value){ $this->data[$name] = $value;
+	}
+	public function __get($name){ if (array_key_exists($name, $this->data)) {
+		return $this->data[$name];
+		}
+		$trace = debug_backtrace();
+		trigger_error( 'Undefined property via __get(): ' . $name . ' in ' . $trace[0]['file'] . ' on line ' . $trace[0]['line'], E_USER_NOTICE); return null;
+		}
+		public function getPdo() { return $this->pdo;
+		}
+		function __construct($pdo = null) { $this->pdo = $pdo;
+			if ($this->pdo == null) $this->conectar();
+			}
+			public function conectar() { try { $this->pdo = new PDO("mysql:host=localhost;dbname=print", "root", "Password12", array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+			}
+			catch (PDOException $e) { print "Error!: " . $e->getMessage() . "<br/>"; die();
+			}
+			}
+			public function desconectar() { $this->pdo = null;
+				}
+				public function select($sql){ $stmt = $this->pdo->prepare($sql); $stmt->execute();
+					return $stmt->fetchAll(PDO::FETCH_ASSOC);
+					}
+					}
 
 ?>
-<!DOCTYPE html>
-<html lang="pt-br">
-    <head>
-        <meta charset="utf-8">
-        <title>Exportação</title>
-</head>
-<body>
-
-<?php
-
-$arquivo = ("exporta.xls");
-
-$html = '<table border="1">';
-$html = '<tr>';
-$html = '<td colspan="5">Exportacao de Relatorios - Elliot</td>';
-$html = '</tr>';
-$html = '</table>';
-
-$html = '<tr>';
-$html = '<td><b>Nome</b></td>';
-$html = '<td><b>Paginas</b></td>';
-$html = '</tr>';
-
-$resultado = "SELECT user,sum(pages) FROM jobs_log group by user";
-$resultado_export = mysql_query($conn, $resultado);
-
-while($row_nomes = mysql_fetch_assoc($resultado_export)){
-            $html .= '<tr>';
-            $html .= '<td>'.$row_nomes["id"].'</td>';
-            $html .= '<td>'.$row_nomes["nome"].'</td>';
-            $html .= '</tr>';
-            
-}
-
-// Configurações header para forçar o download
-header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-header ("Last-Modified: " . gmdate("D,d M YH:i:s") . " GMT");
-header ("Cache-Control: no-cache, must-revalidate");
-header ("Pragma: no-cache");
-header ("Content-type: application/x-msexcel");
-header ("Content-Disposition: attachment; filename={$arquivo}" );
-header ("Content-Description: PHP Generated Data" );
-
-echo $html;
-exit;
-?>	
-</body>
-</html>

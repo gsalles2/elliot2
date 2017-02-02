@@ -25,24 +25,14 @@
   DB_connect($DB_host,$DB_login,$DB_pass);
   DB_select($DB_db);
 
-  $top10Users=jas_getUserRankings(10);
-  $top5Printers=jas_getPrinterRankings(5);
+  $totalusers=jas_getUserRankings(1000);
   
 ?><!-- Inicio do Sumario -->
 
-<h2>Relatórios</h2>
+<h2>Relatório completo dos usuários</h2>
 
-	<h3>Top 10 Usuários</h3>
-		<?=($top10Users)?$top10Users:"<p>An error occured, please check the error messages.</p>"?>
-	<h3>Top 5 Impressoras</h3>
-		<?=($top5Printers)?$top5Printers:"<p>An error occured, please check the error messages.</p>"?>
+<?=($totalusers)?$totalusers:"<p>An error occured, please check the error messages.</p>"?>
 
-<h3>Relatório Completo</h3>
-<p>
-	<a href="index.php?section=cpluser"><button type="submit">USUÁRIOS</button></a>
-	<a href="index.php?section=cplprinter"><button type="submit">IMPRESSORAS</button></a>
-</p>
-<br>
 <h3>Exportar dados</h3>
 <p>
 	Selecione o tipo de extensão que você quer seu relatório.

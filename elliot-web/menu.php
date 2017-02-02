@@ -31,9 +31,8 @@
 
 <div class="salles">
 	<div class="box_menu">
-			<div class="box_server">
 			<b><?=($Total)?$Total:"<p>An error occured, please check the error messages.</p>"?></b>
-			</div>
+
 	</div>
 	<div class="menu"><!-- Aqui começa o menu, cada <li> é um menu -->
 	      <ul>
